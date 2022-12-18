@@ -1,0 +1,150 @@
+{
+  "$schema": "https://www.krakend.io/schema/v3.json",
+  "version": 3,
+  "output_encoding": "json",
+  "debug_endpoint": true,
+  "extra_config": {
+    "router": {
+      "return_error_msg": false
+    }
+  },
+  "endpoints": [
+    {
+      "endpoint": "/v1/users/add",
+      "method": "POST",
+      "output_encoding": "json",
+
+      "backend": [
+        {
+          "url_pattern": "/v1/users/add",
+          "encoding": "safejson",
+          "sd": "static",
+          "method": "POST",
+          "host": [
+            "http://auth_service:8000"
+          ]
+        }
+      ],
+      "extra_config": {
+        "validation/json-schema": {
+          "type": "object",
+          "required": [
+            "username",
+            "email",
+            "password"
+          ],
+          "properties": {
+            "username": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "/v1/delivery",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/v1/delivery",
+          "encoding": "json",
+          "is_collection": true,
+          "sd": "static",
+          "method": "GET",
+          "host": [
+            "http://delivery_service:8000"
+          ],
+          "mapping": {
+            "collection": "deliveries"
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/data",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/v1/users",
+          "encoding": "safejson",
+          "is_collection": true,
+          "host": [
+            "http://auth_service:8000"
+          ],
+          "mapping": {
+            "collection": "users"
+          }
+        },
+        {
+          "url_pattern": "/v1/delivery",
+          "encoding": "safejson",
+          "is_collection": true,
+          "host": [
+            "http://delivery_service:8000"
+          ],
+          "mapping": {
+            "collection": "deliveries"
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/users",
+      "method": "GET",
+      "input_headers": ["*"],
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/v1/users",
+          "sd": "static",
+          "method": "GET",
+          "is_collection": true,
+          "host": [
+            "http://auth_service:8000"
+          ],
+          "mapping": {
+            "collection": "users"
+          }
+        }
+      ],
+      "extra_config": {
+        "auth/validator": {
+          "alg": "HS256",
+          "jwk_local_path": "jwk_private_key.json",
+          "disable_jwk_security": true,
+          "operation_debug": true
+        }
+      }
+    },
+    {
+      "endpoint": "/v1/login",
+      "method":  "POST",
+      "backend": [
+        {
+          "url_pattern": "/v1/login",
+          "encoding": "safejson",
+          "host": [
+              "http://auth_service:8000"
+          ]
+        }
+      ],
+      "extra_config": {
+        "auth/signer": {
+          "alg": "HS256",
+          "jwk_local_path": "jwk_private_key.json",
+          "keys_to_sign": ["access_token"],
+          "disable_jwk_security": true,
+          "full": false,
+          "kid": "sim2"
+        }
+      }
+    }
+  ]
+}
