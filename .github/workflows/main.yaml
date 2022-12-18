@@ -14,11 +14,11 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the test Docker image
       run: | 
-        cd  delievery_service
-        docker build . --file Dockerfile.test -t delievery-service
+        cd  delivery_service
+        docker build . --file Dockerfile.test -t delivery-service
     - name: Run the test Docker image
       run: |
-        docker run delievery-service
+        docker run delivery-service
   
   load-image:
 
@@ -43,6 +43,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ./delievery_service
+          context: ./delivery_service
           push: true
           tags: dumasenko/microservices:latest
