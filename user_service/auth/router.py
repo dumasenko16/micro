@@ -18,6 +18,9 @@ async def login(
         request: OAuth2PasswordRequestForm = Depends(),
 ):
     user = await get_user_by_username(request.username)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Invalid Username')
+
 
     if user.password != request.password:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Invalid Password')
