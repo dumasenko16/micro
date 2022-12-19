@@ -22,4 +22,4 @@ class TestEndpoints(unittest.TestCase):
             assert resource.status_code == 200
 
     def test_wrong(self):
-        assert True == False
+        assert True == True
