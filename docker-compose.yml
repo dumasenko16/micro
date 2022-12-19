@@ -9,8 +9,8 @@ services:
     ports:
       - "8001:8000"
     environment:
-      - JAEGER_AGENT_HOST=jaeger-all-in-one
-      - JWT_SECRETE=jwt_secrete
+      JWT_SECRETE: jwt_secrete
+      JAEGER_AGENT_HOST: jaeger-all-in-one
 
   auth_service:
     container_name: auth_service

@@ -20,3 +20,6 @@ class TestEndpoints(unittest.TestCase):
         async with AsyncClient(app=app, base_url="http://test") as ac:
             resource = await ac.get('/v1/delivery')
             assert resource.status_code == 200
+
+    def test_wrong(self):
+        assert True == False
